@@ -1,0 +1,24 @@
+# Office / Productivity
+d3590ed6-52b3-4102-aeff-aad2292ab01c  # Microsoft Office
+ab9b8c07-8f02-4f72-87fa-80105867a763  # OneDrive Sync
+00b41c95-dab0-4487-9791-b9d2c32c80f2  # Office 365 Management
+bc59ab01-8403-45c6-8796-ac3ef710b3e3  # Outlook Web Access
+27922004-5251-4030-b22d-91ecd9a37ea4  # Outlook Mobile
+
+# Teams / Communication
+1fec8e78-bce4-4aaf-ab1b-5451cc387264  # Microsoft Teams
+5e3ce6c0-2b1f-4285-8d4b-75ee78787346  # Teams Web Client
+57336123-6e14-4acc-8dcf-287b6088aa28  # Teams Meetings
+
+# Azure / Dev
+04b07795-8ddb-461a-bbee-02f9e1bf7b46  # Azure CLI
+1950a258-227b-4e31-a9cf-717495945fc2  # Azure PowerShell
+872cd9fa-d31f-45e0-9eab-6e460a02d1f1  # Visual Studio
+
+# Mobile / Auth
+4e291c71-d680-4d0e-9640-0a3358e31177  # Microsoft Authenticator
+4813382a-8fa7-425e-ab75-3b753aab3abb  # Microsoft Authenticator App
+6c7e8096-f593-4d72-807f-a5f86dcc9c77  # Intune Company Portal
+
+# SharePoint / Search
+d326c1ce-6cc6-4de2-bebc-4591e5e13ef0  # SharePoint Online

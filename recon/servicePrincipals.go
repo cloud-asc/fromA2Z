@@ -155,7 +155,7 @@ func getDangerousPermissions(servicePrincipalId string, appDisplayName string, a
 	}
 	for _, assignment := range result.Value {
 		if permissionName, exists := dangerousRoles[assignment.AppRoleId]; exists {
-			fmt.Printf("[+] Service Principal %s : %s -  %s\n",
+			fmt.Printf("[!] Service Principal %s : %s -  %s\n",
 				appDisplayName, servicePrincipalId, permissionName)
 		}
 	}

@@ -364,7 +364,7 @@ func TryAllScopes(clientID string, clientSecret string, tenantID string, socks i
 	fmt.Println("\nDone trying all scopes.")
 }
 
-func RefreshToken(scope string, socks int) error {
+func RefreshToken(clientID string, scope string, socks int) error {
 	if _, err := os.Stat(authFile); errors.Is(err, os.ErrNotExist) {
 		return fmt.Errorf("no auth file found, please authenticate first")
 	}
@@ -404,7 +404,7 @@ func RefreshToken(scope string, socks int) error {
 
 	resp, err := client.PostForm(tokenURL, url.Values{
 		"grant_type":    {"refresh_token"},
-		"client_id":     {claims.ClientId},
+		"client_id":     {clientID},
 		"refresh_token": {authTokens.RefreshToken},
 		"scope":         {scope},
 	})

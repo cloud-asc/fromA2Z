@@ -80,7 +80,7 @@ func main() {
 					return
 				}
 			}
-			if err := auth.RefreshToken(*scope, socks); err != nil {
+			if err := auth.RefreshToken(clientID, *scope, socks); err != nil {
 				fmt.Fprintln(os.Stderr, "Refresh failed:", err)
 				return
 			}
@@ -146,6 +146,22 @@ func main() {
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
 		recon.GetConditionalAccessPolicies(access_token, socks)
+	case "dynamicGroups":
+		reconCmd.Parse(os.Args[2:])
+		checkAuthForRecon(&access_token)
+		recon.FindDynamicGroups(access_token, socks)
+	case "applications":
+		reconCmd.Parse(os.Args[2:])
+		checkAuthForRecon(&access_token)
+		recon.FindApplications(access_token, socks)
+	case "ARMDeployments":
+		reconCmd.Parse(os.Args[2:])
+		checkAuthForRecon(&access_token)
+		recon.FindARMDeploymentSecrets(access_token, socks)
+	case "pwned":
+		reconCmd.Parse(os.Args[2:])
+		checkAuthForRecon(&access_token)
+		recon.FindPwnedObjects(access_token, socks)
 	default:
 		fmt.Printf("Unknown command: %s\n", os.Args[1])
 		printUsage()
