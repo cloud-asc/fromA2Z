@@ -1,0 +1,5 @@
+d3590ed6-52b3-4102-aeff-aad2292ab01c - Microsoft Office Client ID Useful for SharePoint Enumeration
+1950a258-227b-4e31-a9cf-717495945fc2 - Powershell App Client ID for Microsoft Graph
+04b07795-8ddb-461a-bbee-02f9e1bf7b46 - Public Client ID Microsoft Azure CLI (Good for ARM)
+d326c1ce-6cc6-4de2-bebc-4591e5e13ef0 - SharePoint Online Actual Sharepoint
+

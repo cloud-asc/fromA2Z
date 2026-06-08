@@ -1,0 +1,7 @@
+.fromA2Z_auth
+.DS_Store
+blobLoot/
+sharepointLoot/
+fromA2Z
+*.exe
+*.bin

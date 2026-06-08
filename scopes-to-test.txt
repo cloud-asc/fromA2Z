@@ -1,0 +1,89 @@
+# Azure AD / Microsoft Graph
+https://graph.microsoft.com/.default
+https://graph.windows.net/.default
+
+# Azure Management
+https://management.azure.com/.default
+https://management.core.windows.net/.default
+
+# Azure Key Vault
+https://vault.azure.net/.default
+
+# Azure Storage
+https://storage.azure.com/.default
+
+# Azure SQL / Database
+https://database.windows.net/.default
+
+# Office 365
+https://outlook.office.com/.default
+https://outlook.office365.com/.default
+
+# SharePoint (replace TENANT with your tenant name)
+https://TENANT.sharepoint.com/.default
+
+# Teams / Skype
+https://api.spaces.skype.com/.default
+https://teams.microsoft.com/.default
+
+# Power Platform
+https://service.powerapps.com/.default
+https://service.flow.microsoft.com/.default
+https://analysis.windows.net/powerbi/api/.default
+
+# Azure DevOps
+https://app.vssps.visualstudio.com/.default
+
+# Intune
+https://intune.microsoft.com/.default
+
+# Azure Synapse
+https://dev.azuresynapse.net/.default
+
+# Azure Digital Twins
+https://digitaltwins.azure.net/.default
+
+# Azure IoT
+https://iothubs.azure.net/.default
+
+# Azure Data Lake
+https://datalake.azure.net/.default
+
+# Azure Batch
+https://batch.core.windows.net/.default
+
+# Azure Service Bus
+https://servicebus.azure.net/.default
+
+# Azure Event Hub
+https://eventhubs.azure.net/.default
+
+# Azure Container Registry
+https://containerregistry.azure.net/.default
+
+# Azure Cosmos DB
+https://cosmos.azure.com/.default
+
+# Azure Quantum
+https://quantum.microsoft.com/.default
+
+# Microsoft 365 Defender
+https://api.securitycenter.microsoft.com/.default
+https://api.security.microsoft.com/.default
+
+# Sentinel / Log Analytics
+https://api.loganalytics.io/.default
+https://monitor.azure.com/.default
+
+# Business Central
+https://api.businesscentral.dynamics.com/.default
+
+# Dynamics 365 (replace TENANT with your tenant name)
+https://TENANT.crm.dynamics.com/.default
+
+# Microsoft Purview
+https://purview.azure.net/.default
+
+# Webshell / MSMAM
+https://webshell.suite.office.com/.default
+https://msmamservice.api.application/.default
