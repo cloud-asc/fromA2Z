@@ -33,6 +33,10 @@ func main() {
 	var list bool
 	var addUser string
 	var resetPassword bool
+	var mailFrom string
+	var mailTo string
+	var mailSubject string
+	var mailBody string
 	reconCmd := flag.NewFlagSet("", flag.ExitOnError)
 	reconCmd.StringVar(&access_token, "a", "", "AccessToken")
 	reconCmd.StringVar(&servicePrincipal, "sp", "", "Service Principal ID")
@@ -45,6 +49,10 @@ func main() {
 	reconCmd.StringVar(&password, "password", "", "New password (optional, auto-generated if omitted)")
 	reconCmd.BoolVar(&resetPassword, "resetPassword", false, "Reset password of user in AU")
 	reconCmd.BoolVar(&list, "list", false, "List AUs, members, and scoped role members")
+	reconCmd.StringVar(&mailFrom, "from", "", "Sender email address")
+	reconCmd.StringVar(&mailTo, "to", "", "Recipient email address")
+	reconCmd.StringVar(&mailSubject, "subject", "", "Email subject")
+	reconCmd.StringVar(&mailBody, "body", "", "Email body (HTML supported)")
 	authCmd.StringVar(&clientID, "client-id", "d3590ed6-52b3-4102-aeff-aad2292ab01c", "Client ID, default value is for AZ Office Applications")
 	authCmd.StringVar(&clientID, "c", "d3590ed6-52b3-4102-aeff-aad2292ab01c", "Client ID, default value is for AZ Office Applications")
 	authCmd.StringVar(&tenantID, "tenant-id", "", "Tenant ID GUID or Tenant Name (bui.com)")
@@ -57,6 +65,8 @@ func main() {
 	authCmd.BoolVar(&checkAsked, "check", false, "Check if authentication and also write to token file")
 	authCmd.BoolVar(&helpAsked, "help", false, "Help menu")
 	authCmd.BoolVar(&helpAsked, "h", false, "Help menu")
+	reconCmd.BoolVar(&helpAsked, "help", false, "Help menu")
+	reconCmd.BoolVar(&helpAsked, "h", false, "Help menu")
 	scope := authCmd.String("scope", "https://graph.microsoft.com/.default", "Scope (graph, azure management)")
 	if len(os.Args) < 2 {
 		printUsage()
@@ -147,6 +157,11 @@ func main() {
 		recon.FindDangerousServicePrincipals(access_token, servicePrincipal, socks)
 	case "sharePoint":
 		reconCmd.Parse(os.Args[2:])
+		if helpAsked {
+			fmt.Println("Usage: -search \"password Filetype.ps1\" -n <number of hosts> ")
+			fmt.Println("Search function will give you the option to download the files as well")
+			return
+		}
 		checkAuthForRecon(&access_token)
 
 		recon.SearchSharePoint(access_token, searchString, sharepointLimit, socks)
@@ -174,6 +189,16 @@ func main() {
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
 		recon.FindPwnedObjects(access_token, socks)
+	case "sendMail":
+		reconCmd.Parse(os.Args[2:])
+		checkAuthForRecon(&access_token)
+		if mailFrom == "" || mailTo == "" || mailSubject == "" {
+			fmt.Println("Usage: fromA2Z sendMail -from <email> -to <email> -subject <subject> -body <body> -a <token>")
+			return
+		}
+		if err := recon.SendMail(access_token, mailFrom, mailTo, mailSubject, mailBody, socks); err != nil {
+			fmt.Fprintln(os.Stderr, "Send mail failed:", err)
+		}
 	case "administrativeUnits":
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
@@ -209,8 +234,15 @@ func printUsage() {
 	fmt.Println("\nUsage: fromA2Z <command> [arguments]")
 	fmt.Println("\nAvailable commands:")
 	fmt.Println("  auth    - Authenticate to the service or refresh tokens")
+	fmt.Println(". pwned - Check for everything that your user owns")
 	fmt.Println("  servicePrincipals   - Check service principals with dangerous permissions")
 	fmt.Println("  sharePoint - Search Sharepoint")
+	fmt.Println("  storage - Check storage accounts for any containers or blobs with anonymous access")
+	fmt.Println("  dynamicGroups - Check all dynamic groups and their rules")
+	fmt.Println("  conditionalAccess - Check contiional access policies")
+	fmt.Println("  ARMDeployments - Check ARM deployments for any sensitive items")
+	fmt.Println("  administrativeUnits - See any administrative units and add users if you have access")
+
 }
 
 func printAuthUsage() {
