@@ -318,13 +318,43 @@ func downloadFile(downloadUrl string, filename string, access_token string, sock
 
 func isBinary(filename string) bool {
 	binaryExtensions := map[string]bool{
-		".exe": true, ".dll": true, ".bin": true, ".zip": true,
-		".tar": true, ".gz": true, ".rar": true, ".7z": true,
+		// executables
+		".exe": true, ".dll": true, ".bin": true, ".so": true,
+		".dylib": true, ".sys": true, ".drv": true,
+		// archives
+		".zip": true, ".tar": true, ".gz": true, ".rar": true,
+		".7z": true, ".bz2": true, ".xz": true, ".cab": true,
+		".iso": true, ".dmg": true, ".pkg": true, ".deb": true,
+		".rpm": true,
+		// documents
 		".pdf": true, ".doc": true, ".docx": true, ".xls": true,
-		".xlsx": true, ".ppt": true, ".pptx": true, ".db": true,
-		".sqlite": true, ".png": true, ".jpg": true, ".jpeg": true,
-		".gif": true, ".bmp": true, ".ico": true, ".mp4": true,
-		".mp3": true, ".wav": true, ".mov": true, ".avi": true,
+		".xlsx": true, ".ppt": true, ".pptx": true, ".odt": true,
+		".ods": true, ".odp": true, ".pages": true, ".numbers": true,
+		// email
+		".msg": true, ".eml": true, ".pst": true, ".ost": true,
+		".mbox": true,
+		// images
+		".png": true, ".jpg": true, ".jpeg": true, ".gif": true,
+		".bmp": true, ".ico": true, ".svg": true, ".tiff": true,
+		".webp": true, ".heic": true,
+		// video
+		".mp4": true, ".mov": true, ".avi": true, ".mkv": true,
+		".wmv": true, ".flv": true, ".webm": true, ".m4v": true,
+		// audio
+		".mp3": true, ".wav": true, ".flac": true, ".aac": true,
+		".ogg": true, ".wma": true, ".m4a": true,
+		// database
+		".db": true, ".sqlite": true, ".mdb": true, ".accdb": true,
+		".bak": true,
+		// compiled
+		".class": true, ".pyc": true, ".pyo": true, ".o": true,
+		".a": true, ".lib": true,
+		// fonts
+		".ttf": true, ".otf": true, ".woff": true, ".woff2": true,
+		".eot": true,
+		// misc binary
+		".dat": true, ".raw": true, ".dump": true, ".img": true,
+		".vhd": true, ".vmdk": true, ".ova": true, ".ovf": true,
 	}
 	ext := strings.ToLower(path.Ext(filename))
 	return binaryExtensions[ext]

@@ -27,12 +27,24 @@ func main() {
 	var clientSecret string
 	var refreshAsked bool
 	var refresh_token string
+	var auID string
+	var userID string
+	var password string
+	var list bool
+	var addUser string
+	var resetPassword bool
 	reconCmd := flag.NewFlagSet("", flag.ExitOnError)
 	reconCmd.StringVar(&access_token, "a", "", "AccessToken")
 	reconCmd.StringVar(&servicePrincipal, "sp", "", "Service Principal ID")
 	reconCmd.StringVar(&searchString, "search", "password", "Sharepoint Search String")
 	reconCmd.IntVar(&socks, "socks", 69, "SOCKS5 proxy (socks5://127.0.0.1:1080)")
 	reconCmd.IntVar(&sharepointLimit, "n", 10, "Search limit for Sharepoint")
+	reconCmd.StringVar(&auID, "au", "", "Administrative Unit ID")
+	reconCmd.StringVar(&userID, "user", "", "User ID or UPN")
+	reconCmd.StringVar(&addUser, "addUser", "", "Add user to AU (provide user ID)")
+	reconCmd.StringVar(&password, "password", "", "New password (optional, auto-generated if omitted)")
+	reconCmd.BoolVar(&resetPassword, "resetPassword", false, "Reset password of user in AU")
+	reconCmd.BoolVar(&list, "list", false, "List AUs, members, and scoped role members")
 	authCmd.StringVar(&clientID, "client-id", "d3590ed6-52b3-4102-aeff-aad2292ab01c", "Client ID, default value is for AZ Office Applications")
 	authCmd.StringVar(&clientID, "c", "d3590ed6-52b3-4102-aeff-aad2292ab01c", "Client ID, default value is for AZ Office Applications")
 	authCmd.StringVar(&tenantID, "tenant-id", "", "Tenant ID GUID or Tenant Name (bui.com)")
@@ -48,7 +60,7 @@ func main() {
 	scope := authCmd.String("scope", "https://graph.microsoft.com/.default", "Scope (graph, azure management)")
 	if len(os.Args) < 2 {
 		printUsage()
-		os.Exit(1)
+		return
 	}
 	//resource := "https://graph.microsoft.com"
 	// Must call Parse() before using any flags
@@ -162,10 +174,24 @@ func main() {
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
 		recon.FindPwnedObjects(access_token, socks)
+	case "administrativeUnits":
+		reconCmd.Parse(os.Args[2:])
+		checkAuthForRecon(&access_token)
+
+		switch {
+		case list:
+			recon.ListAdministrativeUnits(access_token, socks)
+		case addUser != "":
+			recon.AddUserToAU(access_token, auID, addUser, socks)
+		case resetPassword:
+			recon.ResetUserPassword(access_token, auID, userID, password, socks)
+		default:
+			fmt.Println("Usage: administrativeUnits [-list] [-addUser <userID> -au <auID>] [-resetPassword -au <auID> -user <userID> [-password <pw>]]")
+		}
 	default:
 		fmt.Printf("Unknown command: %s\n", os.Args[1])
 		printUsage()
-		os.Exit(1)
+		return
 	}
 }
 
@@ -200,6 +226,8 @@ func printAuthUsage() {
 	fmt.Println("	-a")
 	fmt.Println("	-refresh-token      Refresh Token")
 	fmt.Println("	-r")
+	fmt.Println("	-refresh            Refresh using auth file")
+
 	fmt.Println("	-help               Help Menu")
 	fmt.Println("	-h                  ")
 }

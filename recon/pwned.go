@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strings"
 )
 
 func FindPwnedObjects(access_token string, socks int) {
@@ -131,6 +132,129 @@ func FindPwnedObjects(access_token string, socks int) {
 				for _, role := range roleResult.Value {
 					fmt.Printf("\n    [!] Role: %s\n", role.DisplayName)
 					fmt.Printf("        Description: %s\n", role.Description)
+				}
+			}
+		}
+	}
+	// check administrative units
+	fmt.Println("\n[*] Checking Administrative Units...")
+
+	auUrl := "https://graph.microsoft.com/v1.0/me/memberOf/microsoft.graph.administrativeUnit"
+	auReq, err := http.NewRequest("GET", auUrl, nil)
+	if err == nil {
+		auReq.Header.Set("Authorization", "Bearer "+access_token)
+		auResp, err := client.Do(auReq)
+		if err == nil {
+			auBody, _ := io.ReadAll(auResp.Body)
+			auResp.Body.Close()
+
+			var auResult struct {
+				Value []struct {
+					ID          string `json:"id"`
+					DisplayName string `json:"displayName"`
+					Description string `json:"description"`
+				} `json:"value"`
+			}
+
+			if err := json.Unmarshal(auBody, &auResult); err == nil {
+				if len(auResult.Value) == 0 {
+					fmt.Println("[-] No administrative units found")
+				}
+				for _, au := range auResult.Value {
+					fmt.Printf("\n    [+] Administrative Unit: %s (%s)\n", au.DisplayName, au.ID)
+					fmt.Printf("        Description: %s\n", au.Description)
+
+					// check scoped role members
+					scopedUrl := fmt.Sprintf("https://graph.microsoft.com/v1.0/directory/administrativeUnits/%s/scopedRoleMembers", au.ID)
+					scopedReq, err := http.NewRequest("GET", scopedUrl, nil)
+					if err != nil {
+						continue
+					}
+					scopedReq.Header.Set("Authorization", "Bearer "+access_token)
+					scopedResp, err := client.Do(scopedReq)
+					if err != nil {
+						continue
+					}
+					scopedBody, _ := io.ReadAll(scopedResp.Body)
+					scopedResp.Body.Close()
+
+					var scopedResult struct {
+						Value []struct {
+							ID             string `json:"id"`
+							RoleID         string `json:"roleId"`
+							RoleMemberInfo struct {
+								ID          string `json:"id"`
+								DisplayName string `json:"displayName"`
+							} `json:"roleMemberInfo"`
+						} `json:"value"`
+					}
+
+					if err := json.Unmarshal(scopedBody, &scopedResult); err == nil {
+						for _, member := range scopedResult.Value {
+							// get role name
+							roleUrl := fmt.Sprintf("https://graph.microsoft.com/v1.0/directoryRoles/%s", member.RoleID)
+							roleReq, err := http.NewRequest("GET", roleUrl, nil)
+							if err != nil {
+								continue
+							}
+							roleReq.Header.Set("Authorization", "Bearer "+access_token)
+							roleResp, err := client.Do(roleReq)
+							if err != nil {
+								continue
+							}
+							roleBody, _ := io.ReadAll(roleResp.Body)
+							roleResp.Body.Close()
+
+							var role struct {
+								DisplayName string `json:"displayName"`
+							}
+							json.Unmarshal(roleBody, &role)
+
+							fmt.Printf("        [!] Scoped Role: %s assigned to %s\n",
+								role.DisplayName, member.RoleMemberInfo.DisplayName)
+
+							// flag dangerous roles
+							roleLower := strings.ToLower(role.DisplayName)
+							if strings.Contains(roleLower, "user administrator") {
+								fmt.Println("            [!!!] Can reset passwords of users in this AU")
+							} else if strings.Contains(roleLower, "helpdesk") {
+								fmt.Println("            [!!!] Can reset passwords of non-admin users in this AU")
+							} else if strings.Contains(roleLower, "groups") {
+								fmt.Println("            [!] Can manage groups in this AU")
+							} else if strings.Contains(roleLower, "authentication") {
+								fmt.Println("            [!!!] Can manage auth methods - MFA reset")
+							}
+						}
+					}
+
+					// list members of the AU
+					membersUrl := fmt.Sprintf("https://graph.microsoft.com/v1.0/directory/administrativeUnits/%s/members?$select=id,displayName,userPrincipalName", au.ID)
+					membersReq, err := http.NewRequest("GET", membersUrl, nil)
+					if err != nil {
+						continue
+					}
+					membersReq.Header.Set("Authorization", "Bearer "+access_token)
+					membersResp, err := client.Do(membersReq)
+					if err != nil {
+						continue
+					}
+					membersBody, _ := io.ReadAll(membersResp.Body)
+					membersResp.Body.Close()
+
+					var membersResult struct {
+						Value []struct {
+							ID                string `json:"id"`
+							DisplayName       string `json:"displayName"`
+							UserPrincipalName string `json:"userPrincipalName"`
+						} `json:"value"`
+					}
+
+					if err := json.Unmarshal(membersBody, &membersResult); err == nil {
+						fmt.Printf("        Members (%d):\n", len(membersResult.Value))
+						for _, member := range membersResult.Value {
+							fmt.Printf("            [+] %s (%s)\n", member.DisplayName, member.UserPrincipalName)
+						}
+					}
 				}
 			}
 		}
