@@ -37,6 +37,7 @@ func main() {
 	var mailTo string
 	var mailSubject string
 	var mailBody string
+	var appObjectId string
 	reconCmd := flag.NewFlagSet("", flag.ExitOnError)
 	reconCmd.StringVar(&access_token, "a", "", "AccessToken")
 	reconCmd.StringVar(&servicePrincipal, "sp", "", "Service Principal ID")
@@ -53,6 +54,7 @@ func main() {
 	reconCmd.StringVar(&mailTo, "to", "", "Recipient email address")
 	reconCmd.StringVar(&mailSubject, "subject", "", "Email subject")
 	reconCmd.StringVar(&mailBody, "body", "", "Email body (HTML supported)")
+	reconCmd.StringVar(&appObjectId, "app-id", "", "App Registration Object ID to target")
 	authCmd.StringVar(&clientID, "client-id", "d3590ed6-52b3-4102-aeff-aad2292ab01c", "Client ID, default value is for AZ Office Applications")
 	authCmd.StringVar(&clientID, "c", "d3590ed6-52b3-4102-aeff-aad2292ab01c", "Client ID, default value is for AZ Office Applications")
 	authCmd.StringVar(&tenantID, "tenant-id", "", "Tenant ID GUID or Tenant Name (bui.com)")
@@ -180,7 +182,7 @@ func main() {
 	case "applications":
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
-		recon.FindApplications(access_token, socks)
+		recon.FindDangerousApplications(access_token, appObjectId, socks)
 	case "ARMDeployments":
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
@@ -242,6 +244,7 @@ func printUsage() {
 	fmt.Println("  conditionalAccess - Check contiional access policies")
 	fmt.Println("  ARMDeployments - Check ARM deployments for any sensitive items")
 	fmt.Println("  administrativeUnits - See any administrative units and add users if you have access")
+	fmt.Println("  sendMail - If an application has the Mail.Send permission")
 
 }
 
