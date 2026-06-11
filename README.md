@@ -1,5 +1,5 @@
 # FROM A 2 Z! Azure Enumeration Tool
-This is a tool for everything Azure. I will be adding features as time goes on and will be regularly updating the functionality. Please let me know if there are any bugs to fix and I will be quick to fix them.
+This is a tool for everything Azure. I will be adding features as time goes on and will be regularly updating the functionality. Please let me know if there are any bugs to fix and I will be quick to fix them. The goal is to have this be an all-inclusive tool for Azure and capture almost everything from A to Z haha.
 
 ## Installation
 ```
