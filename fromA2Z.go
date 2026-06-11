@@ -215,6 +215,10 @@ func main() {
 		default:
 			fmt.Println("Usage: administrativeUnits [-list] [-addUser <userID> -au <auID>] [-resetPassword -au <auID> -user <userID> [-password <pw>]]")
 		}
+	case "whoami":
+		reconCmd.Parse(os.Args[2:])
+		checkAuthForRecon(&access_token)
+		recon.GetCurrentUser(access_token, socks)
 	default:
 		fmt.Printf("Unknown command: %s\n", os.Args[1])
 		printUsage()
