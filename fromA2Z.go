@@ -218,7 +218,7 @@ func main() {
 	case "whoami":
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
-		recon.GetCurrentUser(access_token, socks)
+		recon.GetCurrentUser(access_token)
 	default:
 		fmt.Printf("Unknown command: %s\n", os.Args[1])
 		printUsage()

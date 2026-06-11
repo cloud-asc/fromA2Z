@@ -7,7 +7,7 @@ import (
 	"strings"
 )
 
-func GetCurrentUser(access_token string, socks int) {
+func GetCurrentUser(access_token string) {
 	parts := strings.Split(access_token, ".")
 	if len(parts) != 3 {
 		fmt.Println("Invalid token format")
@@ -18,24 +18,22 @@ func GetCurrentUser(access_token string, socks int) {
 		fmt.Println("Error decoding token:", err)
 		return
 	}
-	var claims struct {
-		DisplayName string `json:"name"`
-		UPN         string `json:"upn"`
-		OID         string `json:"oid"`
-		TID         string `json:"tid"`
-		AppID       string `json:"appid"`
-		AppName     string `json:"app_displayname"`
-	}
+
+	var claims map[string]interface{}
 	if err := json.Unmarshal(decoded, &claims); err != nil {
 		fmt.Println("Error parsing token:", err)
 		return
 	}
-	fmt.Println("\n--- Current User ---")
-	fmt.Println("Display Name: ", claims.DisplayName)
-	fmt.Println("UPN:          ", claims.UPN)
-	fmt.Println("Object ID:    ", claims.OID)
-	fmt.Println("Tenant ID:    ", claims.TID)
-	fmt.Println("App ID:       ", claims.AppID)
-	fmt.Println("App Name:     ", claims.AppName)
+
+	// pretty print the JSON
+	pretty, err := json.MarshalIndent(claims, "", "  ")
+	if err != nil {
+		fmt.Println("Error formatting claims:", err)
+		return
+	}
+
+	fmt.Println("\n--- Access Token ---")
+	fmt.Println(string(pretty))
 	fmt.Println("--------------------")
+	fmt.Println("\nAccess Token:")
 }
