@@ -30,7 +30,7 @@ func SendMail(access_token string, from string, to string, subject string, body 
 
 	var url string
 	if from == "" {
-		url = fmt.Sprintf("https://graph.microsoft.com/v1.0/me/sendMail", from)
+		url = "https://graph.microsoft.com/v1.0/me/sendMail"
 	} else {
 		url = fmt.Sprintf("https://graph.microsoft.com/v1.0/users/%s/sendMail", from)
 	}
