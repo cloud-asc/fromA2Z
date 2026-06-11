@@ -9,18 +9,19 @@ go build fromA2Z.go
 
 ## Authentication
 ```
-//All authentication will be saved on file to .fromA2Z_auth
+All authentication will be saved on file to .fromA2Z_auth
 
-//Device code auth
-./fromA2Z -device-code-auth -t <tenant-id> -scope <optional> -client-id <optional>  // The default will be Microsoft office
+Device code auth
+./fromA2Z -device-code-auth -t <tenant-id> -scope <optional> -client-id <optional>  
+(The default client ID will be Microsoft office)
 
-//Refresh token
+Refresh token
 ./fromA2Z -t <tenant-id> -refresh -r <refresh-token> 
 
-//Application authentication
+Application authentication
 ./fromA2Z -t <tenant-id> -client-id <sp-id or app-id> -client-secret <secret>
 
-//Access token
+Access token
 Use the -a flag when running any recon commands to use an access token directly!
 ```
 
