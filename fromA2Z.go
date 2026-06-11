@@ -194,7 +194,7 @@ func main() {
 	case "sendMail":
 		reconCmd.Parse(os.Args[2:])
 		checkAuthForRecon(&access_token)
-		if mailFrom == "" || mailTo == "" || mailSubject == "" {
+		if mailTo == "" || mailSubject == "" {
 			fmt.Println("Usage: fromA2Z sendMail -from <email> -to <email> -subject <subject> -body <body> -a <token>")
 			return
 		}

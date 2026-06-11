@@ -28,8 +28,12 @@ func SendMail(access_token string, from string, to string, subject string, body 
 		"saveToSentItems": "false"
 	}`, subject, body, to)
 
-	url := fmt.Sprintf("https://graph.microsoft.com/v1.0/users/%s/sendMail", from)
-
+	var url string
+	if from == "" {
+		url = fmt.Sprintf("https://graph.microsoft.com/v1.0/me/sendMail", from)
+	} else {
+		url = fmt.Sprintf("https://graph.microsoft.com/v1.0/users/%s/sendMail", from)
+	}
 	req, err := http.NewRequest("POST", url, strings.NewReader(mailBody))
 	if err != nil {
 		return fmt.Errorf("error creating request: %w", err)
